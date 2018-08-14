@@ -3,24 +3,28 @@
 /// More dartdocs go here.
 library tree;
 
-export 'src/Tree_base.dart';
+export 'src/tree_base.dart';
 
 // TODO: Export any libraries intended for clients of this package.
 
-//import 'package:uuid/uuid.dart';
+import 'package:uuid/uuid.dart';
 import 'dart:math';
 
-String Uuid(){
+
+String MyUuid(){
 
   return Random().nextInt(100).toString();
 }
+
+
 
 class WithUuid {
   String _uuid;
   String _parentUuid;
 
   WithUuid() {
-    this._uuid = Uuid();
+//    this._uuid = Uuid().v4();
+    this._uuid = MyUuid();
   }
 
   String get uuid => _uuid;
@@ -36,7 +40,7 @@ class TreeNode<D extends WithUuid> {
 
   TreeNode<D> add(D newData) {
     //first search for the newData in tree, might already be added
-//    print("add: trying to add ${newData.toString()}");
+//    print("add: trying to add ${newData.toString()} to parent ${newData.parentUuid}");
     TreeNode<D> found = findByUuid(newData.uuid);
     if (found != null) {
 //      print("already in tree: ${newData.uuid}, parent is ${found.toString()}");
@@ -46,7 +50,7 @@ class TreeNode<D extends WithUuid> {
     //if newData not in tree
     // and parent should be the root node, add to this node
     if (newData.parentUuid == null) {
-//      print("adding to root");
+//      print("adding to root ${data?.uuid}");
       return addDirectDescendant(newData);
     }
 
@@ -81,7 +85,7 @@ class TreeNode<D extends WithUuid> {
       return null;
 
     assert (uuid!= null);
-    if (this.data?.uuid == uuid) {
+    if( (this.data !=null ) && (this.data.uuid == uuid) ){
 //      print("IT IS ME!");
       return this;
     }
@@ -119,9 +123,9 @@ class TreeNode<D extends WithUuid> {
 
   }
 
-  factory TreeNode.fromList(List<D> categories) {
-//    var rootData = new <D>("root", null, uuid:"0");
-    TreeNode<D> rootNode = TreeNode<D>(null);
+  factory TreeNode.fromList(List<D> categories, D rootData) {
+
+    TreeNode<D> rootNode = TreeNode<D>(rootData);
 
     var unassigned = List<D>.from(categories);
 
@@ -156,54 +160,7 @@ class TreeNode<D extends WithUuid> {
 
 }
 
-class Category extends WithUuid {
-  String _uuid;
-  String name;
-  String _parentUuid;
-  int fontPointCode;
-  String fontFamily;
-  String fontPackage;
 
-  Category(this.name, this._parentUuid,
-      {this.fontPointCode, this.fontFamily, this.fontPackage, String uuid}) {
-    this._uuid = uuid ?? Uuid();
-  }
 
-  String toString() => "{category [$name] uuid=[$uuid]}";
-}
 
-TreeNode<Category> getCategoriesTree(categories) {
-  var rootData = Category("root", null, uuid:"0");
-  TreeNode<Category> rootNode = TreeNode<Category>(rootData);
-
-  var unassigned = List<Category>.from(categories);
-
-  int iterations = 0;
-  while (unassigned.length > 0 && iterations < categories.length ) {
-    print("ITERATION $iterations\n");
-    iterations++;
-
-    for (var category in categories) {
-
-      if (!unassigned.contains(category)){
-        continue;
-      }
-
-      print("unassigned: $category");
-      var newNode = rootNode.add(category);
-
-      if (newNode == null) {
-        print ("could NOT add $category");
-      }
-      else {
-        print ("added $category");
-        print ("Tree is: \n$rootNode");
-        unassigned.remove(category);
-      }
-    }
-  }
-
-//     print("ROOT: " + rootNode.toString() + "\n");
-  return rootNode;
-}
 
