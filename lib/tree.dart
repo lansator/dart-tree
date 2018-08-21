@@ -10,13 +10,9 @@ export 'src/tree_base.dart';
 import 'package:uuid/uuid.dart';
 import 'dart:math';
 
-
-String MyUuid(){
-
+String MyUuid() {
   return Random().nextInt(100).toString();
 }
-
-
 
 class WithUuid {
   String _uuid;
@@ -28,6 +24,7 @@ class WithUuid {
   }
 
   String get uuid => _uuid;
+
   String get parentUuid => _parentUuid;
 }
 
@@ -70,7 +67,7 @@ class TreeNode<D extends WithUuid> {
   TreeNode<D> addDirectDescendant(D newData) {
     TreeNode<D> child = TreeNode<D>(newData);
     child.parent = this;
-    if (newData !=null )this.children[newData.uuid] = child;
+    if (newData != null) this.children[newData.uuid] = child;
 //    print("addDirectDescendant: added ${child.data} = {$newData} with uuid: ${child.data.uuid} to $this");
 //    print("children: $children");
 
@@ -78,14 +75,12 @@ class TreeNode<D extends WithUuid> {
   }
 
   TreeNode<D> findByUuid(String uuid) {
-
 //    print("looking for uuid: $uuid in $this");
 //    if (data==null) return null;
-    if (uuid==null)
-      return null;
+    if (uuid == null) return null;
 
-    assert (uuid!= null);
-    if( (this.data !=null ) && (this.data.uuid == uuid) ){
+    assert(uuid != null);
+    if ((this.data != null) && (this.data.uuid == uuid)) {
 //      print("IT IS ME!");
       return this;
     }
@@ -100,43 +95,42 @@ class TreeNode<D extends WithUuid> {
     return null;
   }
 
-  List<String> toStringList(){
-
+  List<String> toStringList() {
     var res = <String>[];
 
 //    res.add("Tree:");
 
-    res.add( (data!=null ? "node ${data?.uuid}: $data" : "root" ) + " has ${children.length.toString()} children");
+    res.add((data != null ? "node ${data?.uuid}: $data" : "root") +
+        " parent: " + (parent==null ? "null" : (parent.parent==null ? "root" : parent.data.uuid)) +
+        " has ${children.length.toString()} children");
 
     this.children.forEach((String uuid, TreeNode t) {
-      t.toStringList()..forEach((String str) {res.add ("    " + str);});
-
+      t.toStringList()
+        ..forEach((String str) {
+          res.add("    " + str);
+        });
     });
 
     return res;
-
   }
 
   String toString() {
-
     return toStringList().join("\n");
-
   }
 
-  factory TreeNode.fromList(List<D> categories, D rootData) {
-
-    TreeNode<D> rootNode = TreeNode<D>(rootData);
+  factory TreeNode.fromList(List<D> categories) {
+//    TreeNode<D> rootNode = TreeNode<D>(rootData);
+    TreeNode<D> rootNode = TreeNode<D>(null);
 
     var unassigned = List<D>.from(categories);
 
     int iterations = 0;
-    while (unassigned.length > 0 && iterations < categories.length ) {
+    while (unassigned.length > 0 && iterations < categories.length) {
       print("ITERATION $iterations\n");
       iterations++;
 
       for (var category in categories) {
-
-        if (!unassigned.contains(category)){
+        if (!unassigned.contains(category)) {
           continue;
         }
 
@@ -145,8 +139,7 @@ class TreeNode<D extends WithUuid> {
 
         if (newNode == null) {
 //          print ("could NOT add $category");
-        }
-        else {
+        } else {
 //          print ("added $category");
 //          print ("Tree is: \n$this");
           unassigned.remove(category);
@@ -157,10 +150,4 @@ class TreeNode<D extends WithUuid> {
 //     print("ROOT: " + rootNode.toString() + "\n");
     return rootNode;
   }
-
 }
-
-
-
-
-

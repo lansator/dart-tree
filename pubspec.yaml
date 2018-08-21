@@ -1,6 +1,6 @@
 name: tree
 description: A starting point for Dart libraries or applications.
-version: 0.0.5
+version: 0.0.8
 homepage: https://github.com/dynamic1/dart-tree
 author: alex <alex@alexoprisan.com>
 
@@ -8,7 +8,7 @@ environment:
   sdk: '>=2.0.0-dev.35 <3.0.0'
 
 dependencies:
-  uuid: any
+  uuid: ^1.0.3
 
 dev_dependencies:
   test: ^1.0.0

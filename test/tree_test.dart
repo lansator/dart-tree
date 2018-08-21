@@ -15,7 +15,7 @@ class Category extends WithUuid {
     this._uuid = uuid ?? Uuid().v4();
   }
 
-  String toString() => "{category [$name] uuid=[$uuid]}";
+  String toString() => "{category [$name] uuid=[$uuid] parent_uuid=[$parentUuid] }";
 }
 
 void main() {
